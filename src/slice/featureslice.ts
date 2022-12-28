@@ -43,13 +43,36 @@ export const categoriesSlice = createSlice({
       let filtered = state.categories.filter(
         item => item.id === action.payload.position,
       );
-
       filtered[0].items.push(filtered[0].items.length + 1);
+    },
+    deleteField(state, action: any) {
+      let filtered: any = state.categories.filter(function (el) {
+        return el.id != action.payload.position.id;
+      });
+      state.categories = filtered;
+    },
+    deleteItemInFields(state, action: any) {
+      let category = action.payload.categories[0];
+      let arr = category.items.filter(item => item !== action.payload.position);
+      let item = {
+        fields: category.fields,
+        id: category.id,
+        items: arr,
+        name: category.name,
+      };
+      const currentField = state.categories[item.id] as any;
+      console.log(currentField);
     },
   },
 });
 
-export const {saveCategory, addField, editField, addItemInFields} =
-  categoriesSlice.actions;
+export const {
+  saveCategory,
+  addField,
+  editField,
+  addItemInFields,
+  deleteField,
+  deleteItemInFields,
+} = categoriesSlice.actions;
 
 export default categoriesSlice.reducer;

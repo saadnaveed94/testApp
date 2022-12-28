@@ -8,7 +8,7 @@ import {
 } from '@react-navigation/native';
 import { Button, TextInput, Card, Switch } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
-import { addItemInFields } from '../../slice/featureslice';
+import { addItemInFields, deleteItemInFields } from '../../slice/featureslice';
 import type { RootState } from '../../store/store';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 
@@ -28,9 +28,12 @@ function Home({ navigation, route }: any) {
 
   const [show, setShow] = React.useState<boolean>(false);
   const [value, setValue] = React.useState<string>(new Date().toString());
-  function InnerFieldGetter(type: any) {
 
-    console.log(type);
+  function onRemoveItem(item: any) {
+    dispatch(deleteItemInFields({ categories: filtered, position: item } as any));
+  }
+
+  function InnerFieldGetter(type: any) {
     if (type === 'text') {
       return (
         <View>
@@ -89,10 +92,13 @@ function Home({ navigation, route }: any) {
         <ScrollView style={styles.scrollStyles}>
           <View style={styles.scrollInnerContainer} >
             {
-              filtered[0]?.items?.map(() => {
+              filtered[0]?.items?.map((item) => {
                 return (
                   <Card style={styles.cardStyles}>
                     {FieldGetter()}
+                    {/* <Button mode="contained" onPress={() => onRemoveItem(item)}>
+                      Remove
+                    </Button> */}
                   </Card>
                 );
               })

@@ -10,7 +10,7 @@ import { Card, TextInput, Button } from 'react-native-paper';
 import type { RootState } from '../../store/store';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { addField, saveCategory } from '../../slice/featureslice';
+import { addField, saveCategory, deleteField } from '../../slice/featureslice';
 import { Picker } from '@react-native-picker/picker';
 
 function ManageCategories({ navigation }: any) {
@@ -25,9 +25,8 @@ function ManageCategories({ navigation }: any) {
   const [isEdit, setIsEdit] = React.useState<boolean>(false);
 
   function onPressAdd() {
-
     dispatch(saveCategory({
-      name: 'label', id: categories.length + 1, fields: [{ type: '', value: '' }], items: [],
+      name: `new Category ${categories.length + 1}`, id: categories.length + 1, fields: [{ type: '', value: '' }], items: [],
     } as any));
   }
 
@@ -88,6 +87,11 @@ function ManageCategories({ navigation }: any) {
       setLabel(text);
     }
   }
+
+  function deleteCategory(position: any) {
+    dispatch(deleteField({ position } as any));
+  }
+
   return (
     <View>
       <Header centerText="Categories" leftIcon={<MyIcon height={40} width={40} onPress={() => { toggleDrawer(); }} />} />
@@ -107,10 +111,10 @@ function ManageCategories({ navigation }: any) {
                         <TextInput
                           style={styles.inputStyles}
                           label="New Category"
-                          value={!isEdit ? item.name : label}
+                          value={item.name}
                           onChangeText={text => onChangeLabels(text)}
                         />
-                        <Button onPress={() => setIsEdit(!isEdit)}>{isEdit ? 'save' : 'edit'}</Button>
+                        {/* <Button onPress={() => setIsEdit(!isEdit)}>{isEdit ? 'save' : 'edit'}</Button> */}
                       </View>
                       {item.fields.map(({ type, value }) => FieldGetter(type, value))}
                       < View style={styles.addFieldContainer}>
@@ -123,7 +127,7 @@ function ManageCategories({ navigation }: any) {
                           <Picker.Item label="Date" value="date" />
                           <Picker.Item label="Number" value="number" />
                         </Picker>
-                        <Button style={styles.removeStyles} mode="contained">
+                        <Button onPress={() => { deleteCategory(item); }} style={styles.removeStyles} mode="contained">
                           Remove
                         </Button>
                       </View>
@@ -134,7 +138,6 @@ function ManageCategories({ navigation }: any) {
             </View>
           </View>
         </ScrollView>
-
       </View >
     </View >
   );
